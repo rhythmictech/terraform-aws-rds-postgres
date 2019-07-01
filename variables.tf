@@ -56,8 +56,14 @@ variable "storage_type" {
   default     = "gp2"
 }
 
-variable "mysql_version" {
-  description = "Version of MySQL to use"
+variable "engine" {
+  description = "Which RDS Engine to use"
+  type        = "string"
+  default     = "mysql"
+}
+
+variable "engine_version" {
+  description = "Version of database engine to use"
   type        = string
   default     = "5.6"
 }
@@ -103,4 +109,3 @@ variable "pass_version" {
   type        = string
   default     = 1
 }
-
