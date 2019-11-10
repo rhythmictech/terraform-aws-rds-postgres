@@ -1,22 +1,28 @@
+terraform {
+  required_providers {
+    random = ">= 2.2.0"
+  }
+}
+
 resource "aws_db_instance" "this" {
   allocated_storage                   = var.storage
   backup_retention_period             = var.backup_retention_period
   copy_tags_to_snapshot               = true
-  db_subnet_group_name                = aws_db_subnet_group.mysql.id
+  db_subnet_group_name                = aws_db_subnet_group.this.id
   deletion_protection                 = true
   engine                              = var.engine
   engine_version                      = var.engine_version
   iam_database_authentication_enabled = true
   instance_class                      = var.instance_class
   multi_az                            = var.multi_az
-  password                            = random_string.password.result
+  password                            = random_password.password.result
   port                                = var.port
   storage_encrypted                   = true
   storage_type                        = var.storage_type
   final_snapshot_identifier           = "${var.name}-final-snapshot"
   skip_final_snapshot                 = var.skip_final_snapshot
   username                            = var.username
-  vpc_security_group_ids              = [aws_security_group.mysql.id]
+  vpc_security_group_ids              = [aws_security_group.this.id]
 
   enabled_cloudwatch_logs_exports = [
     "audit",
@@ -29,7 +35,7 @@ resource "aws_db_instance" "this" {
     local.base_tags,
     var.tags,
     {
-      "Name" = "${var.name}-mysql-db"
+      "Name" = "${var.name}-postgres-db"
     },
   )
 }
@@ -67,7 +73,7 @@ resource "aws_security_group" "this" {
   )
 }
 
-resource "random_string" "password" {
+resource "random_password" "password" {
   length           = 40
   special          = true
   min_special      = 5
@@ -79,18 +85,19 @@ resource "random_string" "password" {
 }
 
 resource "aws_secretsmanager_secret" "password" {
-  description = "MySQL database password"
+  name_prefix = var.name
+  description = "${var.name} database password"
 
   tags = merge(
     local.base_tags,
     var.tags,
     {
-      "Name" = "${var.name}-mysql-pass-secret"
+      "Name" = "${var.name}-pass-secret"
     },
   )
 }
 
 resource "aws_secretsmanager_secret_version" "password_val" {
-  secret_id     = aws_secretsmanager_secret.mysql-pass.id
-  secret_string = random_string.password.result
+  secret_id     = aws_secretsmanager_secret.password.id
+  secret_string = random_password.password.result
 }

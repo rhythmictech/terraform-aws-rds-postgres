@@ -1,13 +1,7 @@
-locals {
-  base_tags = {
-    tf_module = "rds"
-  }
-}
-
 variable "name" {
   description = "common name for resources in this module"
   type        = string
-  default     = "mysql-rds"
+  default     = "postgres-rds"
 }
 
 variable "tags" {
@@ -59,13 +53,13 @@ variable "storage_type" {
 variable "engine" {
   description = "Which RDS Engine to use"
   type        = "string"
-  default     = "mysql"
+  default     = "postgres"
 }
 
 variable "engine_version" {
   description = "Version of database engine to use"
   type        = string
-  default     = "5.6"
+  default     = "11.5"
 }
 
 variable "instance_class" {
@@ -83,7 +77,7 @@ variable "multi_az" {
 variable "username" {
   description = "username of master user"
   type        = string
-  default     = "mysql_user"
+  default     = "postgres_user"
 }
 
 variable "backup_retention_period" {
@@ -95,7 +89,7 @@ variable "backup_retention_period" {
 variable "port" {
   description = "Port the database should listen on"
   type        = string
-  default     = "3306"
+  default     = "5432"
 }
 
 variable "skip_final_snapshot" {
