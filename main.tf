@@ -72,7 +72,7 @@ resource "random_password" "password" {
   length           = 40
   special          = true
   min_special      = 5
-  override_special = "!#$%^&*()-_=+[]{}<>:?"
+  override_special = "!#%^&*()-_=+[]{}<>?"
 
   keepers = {
     pass_version = var.pass_version
