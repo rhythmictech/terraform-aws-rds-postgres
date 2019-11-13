@@ -25,10 +25,8 @@ resource "aws_db_instance" "this" {
   vpc_security_group_ids              = [aws_security_group.this.id]
 
   enabled_cloudwatch_logs_exports = [
-    "audit",
-    "error",
-    "general",
-    "slowquery",
+    "postgresql",
+    "upgrade",
   ]
 
   tags = merge(
