@@ -32,7 +32,6 @@ resource "aws_db_instance" "this" {
   ]
 
   tags = merge(
-    local.base_tags,
     var.tags,
     {
       "Name" = "${var.name}-postgres-db"
@@ -44,7 +43,6 @@ resource "aws_db_subnet_group" "this" {
   subnet_ids = var.subnet_ids
 
   tags = merge(
-    local.base_tags,
     var.tags,
     {
       "Name" = "${var.name}-subnet-group"
@@ -65,7 +63,6 @@ resource "aws_security_group" "this" {
   }
 
   tags = merge(
-    local.base_tags,
     var.tags,
     {
       "Name" = "${var.name}-security-group"
@@ -89,7 +86,6 @@ resource "aws_secretsmanager_secret" "password" {
   description = "${var.name} database password"
 
   tags = merge(
-    local.base_tags,
     var.tags,
     {
       "Name" = "${var.name}-pass-secret"
