@@ -103,3 +103,9 @@ variable "pass_version" {
   type        = string
   default     = 1
 }
+
+variable "allowed_password_chars" {
+  description = "What characters are allowed in the postgres password"
+  type        = string
+  default     = "!#%^&*()-_=+[]{}<>?"
+}
