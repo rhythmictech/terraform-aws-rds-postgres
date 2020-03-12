@@ -1,6 +1,17 @@
 variable "name" {
   description = "common name for resources in this module"
   type        = string
+}
+
+variable "db_name" {
+  description = "database name (leave blank to keep RDS from creating an initial database)"
+  type        = string
+  default     = ""
+}
+
+variable "identifier_prefix" {
+  description = "what to prefix the rds url with"
+  type        = string
   default     = "postgres-rds"
 }
 
@@ -10,9 +21,9 @@ variable "tags" {
   default     = {}
 }
 
-variable "subnet_ids" {
-  description = "Subnets used for database"
-  type        = list(string)
+variable "subnet_group_name" {
+  description = "Subnet group used for database"
+  type        = string
 }
 
 variable "vpc_id" {
@@ -38,22 +49,21 @@ variable "allowed_ipv6_cidr_blocks" {
   default     = []
 }
 
+variable "storage_encrypted" {
+  description = "Use EBS volume encryption (AWS-SSE)"
+  type        = bool
+  default     = true
+}
+
 variable "storage" {
   description = "How much storage is available to the database"
   type        = string
-  default     = 20
 }
 
 variable "storage_type" {
   description = "What storage backend to use (gp2 or standard. io1 not supported)"
   type        = string
   default     = "gp2"
-}
-
-variable "engine" {
-  description = "Which RDS Engine to use"
-  type        = "string"
-  default     = "postgres"
 }
 
 variable "engine_version" {
@@ -71,7 +81,7 @@ variable "instance_class" {
 variable "multi_az" {
   description = "whether to make database multi-az"
   type        = string
-  default     = true
+  default     = false
 }
 
 variable "username" {
@@ -108,4 +118,9 @@ variable "allowed_password_chars" {
   description = "What characters are allowed in the postgres password"
   type        = string
   default     = "!#%^&*()-_=+[]{}<>?"
+}
+
+variable "iam_database_authentication" {
+  type    = bool
+  default = false
 }

@@ -1,54 +1,4 @@
-terraform {
-  required_providers {
-    random = ">= 2.2.0"
-  }
-}
-
-resource "aws_db_instance" "this" {
-  allocated_storage                   = var.storage
-  backup_retention_period             = var.backup_retention_period
-  copy_tags_to_snapshot               = true
-  db_subnet_group_name                = aws_db_subnet_group.this.id
-  deletion_protection                 = true
-  engine                              = var.engine
-  engine_version                      = var.engine_version
-  iam_database_authentication_enabled = true
-  instance_class                      = var.instance_class
-  multi_az                            = var.multi_az
-  password                            = random_password.password.result
-  port                                = var.port
-  storage_encrypted                   = true
-  storage_type                        = var.storage_type
-  final_snapshot_identifier           = "${var.name}-final-snapshot"
-  skip_final_snapshot                 = var.skip_final_snapshot
-  username                            = var.username
-  vpc_security_group_ids              = [aws_security_group.this.id]
-
-  enabled_cloudwatch_logs_exports = [
-    "postgresql",
-    "upgrade",
-  ]
-
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "${var.name}-postgres-db"
-    },
-  )
-}
-
-resource "aws_db_subnet_group" "this" {
-  subnet_ids = var.subnet_ids
-
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "${var.name}-subnet-group"
-    },
-  )
-}
-
-resource "aws_security_group" "this" {
+resource "aws_security_group" "sg" {
   vpc_id = var.vpc_id
 
   ingress {
@@ -63,35 +13,55 @@ resource "aws_security_group" "this" {
   tags = merge(
     var.tags,
     {
-      "Name" = "${var.name}-security-group"
+      "Name" = "${var.name}-postgres-sg"
     },
   )
 }
 
-resource "random_password" "password" {
+module "db-password" {
+  source           = "git::https://github.com/rhythmictech/terraform-secretsmanager-random-secret?ref=v0.0.5"
+  name             = "${var.name}-db-master-password"
+  description      = join("", [var.name, "database password (username ", var.username, ")"])
+  tags             = var.tags
   length           = 40
   special          = true
-  min_special      = 5
-  override_special = "!#%^&*()-_=+[]{}<>?"
-
-  keepers = {
-    pass_version = var.pass_version
-  }
+  min_special      = 3
+  override_special = "#$%^&*()-_=+[]{}<>:?"
+  pass_version     = var.pass_version
 }
 
-resource "aws_secretsmanager_secret" "password" {
-  name_prefix = var.name
-  description = "${var.name} database password"
+
+resource "aws_db_instance" "this" {
+  allocated_storage                   = var.storage
+  backup_retention_period             = var.backup_retention_period
+  copy_tags_to_snapshot               = true
+  db_subnet_group_name                = var.subnet_group_name
+  deletion_protection                 = true
+  engine                              = "postgres"
+  engine_version                      = var.engine_version
+  iam_database_authentication_enabled = var.iam_database_authentication
+  identifier_prefix                   = var.identifier_prefix
+  instance_class                      = var.instance_class
+  multi_az                            = var.multi_az
+  name                                = var.db_name == "" ? null : var.db_name
+  password                            = module.db-password.secret
+  port                                = var.port
+  storage_encrypted                   = var.storage_encrypted
+  storage_type                        = var.storage_type
+  final_snapshot_identifier           = "${var.name}-final-snapshot"
+  skip_final_snapshot                 = var.skip_final_snapshot
+  username                            = var.username
+  vpc_security_group_ids              = [aws_security_group.sg.id]
+
+  enabled_cloudwatch_logs_exports = [
+    "postgresql",
+    "upgrade",
+  ]
 
   tags = merge(
     var.tags,
     {
-      "Name" = "${var.name}-pass-secret"
+      "Name" = "${var.name}-postgres-db"
     },
   )
-}
-
-resource "aws_secretsmanager_secret_version" "password_val" {
-  secret_id     = aws_secretsmanager_secret.password.id
-  secret_string = random_password.password.result
 }

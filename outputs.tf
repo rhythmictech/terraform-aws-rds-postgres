@@ -1,28 +1,14 @@
 output "password-arn" {
-  value = aws_secretsmanager_secret.password.arn
+  value = module.db-password.secret_arn
 }
 
-output "password-version" {
-  value = aws_secretsmanager_secret_version.password_val.version_id
-}
 
 output "instance" {
   value = {
     id       = aws_db_instance.this.id
     username = aws_db_instance.this.username
     address  = aws_db_instance.this.address
+    port     = aws_db_instance.this.port
+    endpoint = aws_db_instance.this.endpoint
   }
 }
-
-output "instance-id" {
-  value = aws_db_instance.this.id
-}
-
-output "username" {
-  value = aws_db_instance.this.username
-}
-
-output "address" {
-  value = aws_db_instance.this.address
-}
-
