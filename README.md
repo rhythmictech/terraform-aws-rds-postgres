@@ -35,7 +35,7 @@ Create a postgres RDS instance
 | pass\_version | Increment to force DB password change | `string` | `1` | no |
 | port | Port the database should listen on | `string` | `"5432"` | no |
 | skip\_final\_snapshot | If true no final snapshot will be taken on termination | `string` | `false` | no |
-| ssm\_path | Custom path for SSM parameter, only takes effect if create\_ssm\_secret is true. | `string` | `""` | no |
+| ssm\_path | Custom path for SSM parameter, only takes effect if `create_ssm_secret` is true. | `string` | `""` | no |
 | storage | How much storage is available to the database | `string` | `20` | no |
 | storage\_type | What storage backend to use (gp2 or standard. io1 not supported) | `string` | `"gp2"` | no |
 | subnet\_ids | Subnets used for database | `list(string)` | n/a | yes |

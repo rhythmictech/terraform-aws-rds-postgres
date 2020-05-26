@@ -5,7 +5,7 @@ terraform {
 }
 
 locals {
-  ssm_path = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-passowrd")
+  ssm_path = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-password")
 }
 
 resource "aws_db_instance" "this" {
