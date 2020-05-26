@@ -4,6 +4,10 @@ terraform {
   }
 }
 
+locals {
+  ssm_path = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-passowrd")
+}
+
 resource "aws_db_instance" "this" {
   allocated_storage                   = var.storage
   backup_retention_period             = var.backup_retention_period
@@ -15,6 +19,7 @@ resource "aws_db_instance" "this" {
   iam_database_authentication_enabled = true
   instance_class                      = var.instance_class
   multi_az                            = var.multi_az
+  name                                = var.name
   password                            = random_password.password.result
   port                                = var.port
   storage_encrypted                   = true
@@ -77,10 +82,6 @@ resource "random_password" "password" {
   keepers = {
     pass_version = var.pass_version
   }
-}
-
-locals {
-  ssm_path = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-passowrd")
 }
 
 resource "aws_secretsmanager_secret" "password" {
