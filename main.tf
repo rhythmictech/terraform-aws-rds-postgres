@@ -79,6 +79,22 @@ resource "random_password" "password" {
   }
 }
 
+variable "create_secretmanager_secret" {
+  default = true
+}
+
+variable "ssm_path" {
+  default = ""
+}
+
+locals {
+  ssm_path = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-passowrd")
+}
+
+variable "create_ssm_secret" {
+  default = false
+}
+
 resource "aws_secretsmanager_secret" "password" {
   name_prefix = var.name
   description = "${var.name} database password"
@@ -94,4 +110,18 @@ resource "aws_secretsmanager_secret" "password" {
 resource "aws_secretsmanager_secret_version" "password_val" {
   secret_id     = aws_secretsmanager_secret.password.id
   secret_string = random_password.password.result
+}
+
+resource "aws_ssm_parameter" "secret" {
+  name        = local.ssm_path
+  description = "${var.name} database password"
+  type        = "SecureString"
+  value       = random_password.password.result
+
+  tags = merge(
+    var.tags,
+    {
+      "Name" = "${var.name}-pass-secret"
+    },
+  )
 }
