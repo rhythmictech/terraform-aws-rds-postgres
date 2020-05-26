@@ -48,11 +48,11 @@ Create a mysql RDS instance
 
 | Name | Description |
 |------|-------------|
-| address | n/a |
-| instance | n/a |
-| instance-id | n/a |
-| password-arn | n/a |
-| password-version | n/a |
-| username | n/a |
+| address | The hostname of the RDS instance. See also endpoint and port. |
+| instance | Map with address, id, and username keys |
+| instance-id | The RDS instance ID. |
+| password-arn | The ARN of the SecretManager Secret. |
+| password-version | The unique identifier of the version of the secret. |
+| username | The master username for the database. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
