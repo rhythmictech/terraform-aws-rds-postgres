@@ -12,32 +12,32 @@ output "instance" {
   }
 }
 
-output "instance-id" {
+output "instance_id" {
   description = "The RDS instance ID."
   value       = aws_db_instance.this.id
 }
 
-output "password-secretsmanager-arn" {
+output "password_secretsmanager_arn" {
   description = "The ARN of the SecretManager Secret."
   value       = var.create_secretmanager_secret ? aws_secretsmanager_secret.password.arn : ""
 }
 
-output "password-secretsmanager-version" {
+output "password_secretsmanager_version" {
   description = "The unique identifier of the version of the secret."
   value       = var.create_secretmanager_secret ? aws_secretsmanager_secret_version.password_val.version_id : ""
 }
 
-output "password-ssm-arn" {
+output "password_ssm_arn" {
   description = "The ARN of the SecretManager Secret."
   value       = var.create_ssm_secret ? aws_ssm_parameter.password.arn : ""
 }
 
-output "password-ssm-name" {
+output "password_ssm_name" {
   description = "The name of the parameter."
   value       = var.create_ssm_secret ? aws_ssm_parameter.password.name : ""
 }
 
-output "password-ssm-version" {
+output "password_ssm_version" {
   description = "The unique identifier of the version of the secret."
   value       = var.create_ssm_secret ? aws_ssm_parameter.password.version : ""
 }

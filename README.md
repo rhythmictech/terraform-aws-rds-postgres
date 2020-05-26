@@ -49,12 +49,12 @@ Create a postgres RDS instance
 |------|-------------|
 | address | The hostname of the RDS instance. See also endpoint and port. |
 | instance | Map with address, id, and username keys |
-| instance-id | The RDS instance ID. |
-| password-secretsmanager-arn | The ARN of the SecretManager Secret. |
-| password-secretsmanager-version | The unique identifier of the version of the secret. |
-| password-ssm-arn | The ARN of the SecretManager Secret. |
-| password-ssm-name | The name of the parameter. |
-| password-ssm-version | The unique identifier of the version of the secret. |
+| instance\_id | The RDS instance ID. |
+| password\_secretsmanager\_arn | The ARN of the SecretManager Secret. |
+| password\_secretsmanager\_version | The unique identifier of the version of the secret. |
+| password\_ssm\_arn | The ARN of the SecretManager Secret. |
+| password\_ssm\_name | The name of the parameter. |
+| password\_ssm\_version | The unique identifier of the version of the secret. |
 | username | The master username for the database. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
