@@ -1,5 +1,5 @@
-# terraform-aws-rds-mysql
-Create a mysql RDS instance
+# terraform-aws-rds-postgres  [![](https://github.com/rhythmictech/terraform-aws-rds-postgres/workflows/pre-commit-check/badge.svg)](https://github.com/rhythmictech/terraform-aws-rds-postgres/actions) <a href="https://twitter.com/intent/follow?screen_name=RhythmicTech"><img src="https://img.shields.io/twitter/follow/RhythmicTech?style=social&logo=RhythmicTech" alt="follow on Twitter"></a>
+Create a postgres RDS instance
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
