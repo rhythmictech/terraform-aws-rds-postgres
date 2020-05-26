@@ -28,6 +28,18 @@ variable "backup_retention_period" {
   type        = string
 }
 
+variable "create_secretmanager_secret" {
+  default     = true
+  description = "True to create a secretmanager secret containing DB password"
+  type        = bool
+}
+
+variable "create_ssm_secret" {
+  default     = false
+  description = "True to create a SSM Parameter SecretString containing DB password"
+  type        = bool
+}
+
 variable "engine" {
   default     = "postgres"
   description = "Which RDS Engine to use"
@@ -79,6 +91,12 @@ variable "skip_final_snapshot" {
 variable "storage" {
   default     = 20
   description = "How much storage is available to the database"
+  type        = string
+}
+
+variable "ssm_path" {
+  default     = ""
+  description = "Custom path for SSM parameter, only takes effect if create_ssm_secret is true. "
   type        = string
 }
 

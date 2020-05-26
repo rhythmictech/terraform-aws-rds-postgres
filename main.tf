@@ -79,20 +79,8 @@ resource "random_password" "password" {
   }
 }
 
-variable "create_secretmanager_secret" {
-  default = true
-}
-
-variable "ssm_path" {
-  default = ""
-}
-
 locals {
   ssm_path = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-passowrd")
-}
-
-variable "create_ssm_secret" {
-  default = false
 }
 
 resource "aws_secretsmanager_secret" "password" {
