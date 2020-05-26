@@ -19,27 +19,27 @@ output "instance_id" {
 
 output "password_secretsmanager_arn" {
   description = "The ARN of the SecretManager Secret."
-  value       = var.create_secretmanager_secret ? aws_secretsmanager_secret.password.arn : ""
+  value       = var.create_secretmanager_secret ? aws_secretsmanager_secret.password[0].arn : ""
 }
 
 output "password_secretsmanager_version" {
   description = "The unique identifier of the version of the secret."
-  value       = var.create_secretmanager_secret ? aws_secretsmanager_secret_version.password_val.version_id : ""
+  value       = var.create_secretmanager_secret ? aws_secretsmanager_secret_version.password_[0].version_id : ""
 }
 
 output "password_ssm_arn" {
   description = "The ARN of the SecretManager Secret."
-  value       = var.create_ssm_secret ? aws_ssm_parameter.password.arn : ""
+  value       = var.create_ssm_secret ? aws_ssm_parameter.password[0].arn : ""
 }
 
 output "password_ssm_name" {
   description = "The name of the parameter."
-  value       = var.create_ssm_secret ? aws_ssm_parameter.password.name : ""
+  value       = var.create_ssm_secret ? aws_ssm_parameter.password[0].name : ""
 }
 
 output "password_ssm_version" {
   description = "The unique identifier of the version of the secret."
-  value       = var.create_ssm_secret ? aws_ssm_parameter.password.version : ""
+  value       = var.create_ssm_secret ? aws_ssm_parameter.password[0].version : ""
 }
 
 output "username" {
