@@ -109,3 +109,26 @@ variable "vpc_id" {
   description = "ID of VPC resources will be created in"
   type        = string
 }
+
+##################################################
+# Global Vars
+##################################################
+variable "env" {
+  description = "Environment being deployed to"
+  type        = string
+}
+
+variable "namespace" {
+  description = "Namespace of this project/system"
+  type        = string
+}
+
+variable "owner" {
+  description = "Team/person responsible for resources defined within this project"
+  type        = string
+}
+
+variable "region" {
+  description = "Region resources are being deployed to"
+  type        = string
+}
