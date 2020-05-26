@@ -1,28 +1,48 @@
-output "password-arn" {
-  value = aws_secretsmanager_secret.password.arn
-}
-
-output "password-version" {
-  value = aws_secretsmanager_secret_version.password_val.version_id
+output "address" {
+  description = "The hostname of the RDS instance. See also endpoint and port."
+  value       = aws_db_instance.this.address
 }
 
 output "instance" {
+  description = "Map with address, id, and username keys"
   value = {
+    address  = aws_db_instance.this.address
     id       = aws_db_instance.this.id
     username = aws_db_instance.this.username
-    address  = aws_db_instance.this.address
   }
 }
 
-output "instance-id" {
-  value = aws_db_instance.this.id
+output "instance_id" {
+  description = "The RDS instance ID."
+  value       = aws_db_instance.this.id
+}
+
+output "password_secretsmanager_arn" {
+  description = "The ARN of the SecretManager Secret."
+  value       = var.create_secretmanager_secret ? aws_secretsmanager_secret.password[0].arn : ""
+}
+
+output "password_secretsmanager_version" {
+  description = "The unique identifier of the version of the secret."
+  value       = var.create_secretmanager_secret ? aws_secretsmanager_secret_version.password_val[0].version_id : ""
+}
+
+output "password_ssm_arn" {
+  description = "The ARN of the SecretManager Secret."
+  value       = var.create_ssm_secret ? aws_ssm_parameter.password[0].arn : ""
+}
+
+output "password_ssm_name" {
+  description = "The name of the parameter."
+  value       = var.create_ssm_secret ? aws_ssm_parameter.password[0].name : ""
+}
+
+output "password_ssm_version" {
+  description = "The unique identifier of the version of the secret."
+  value       = var.create_ssm_secret ? aws_ssm_parameter.password[0].version : ""
 }
 
 output "username" {
-  value = aws_db_instance.this.username
+  description = "The master username for the database."
+  value       = aws_db_instance.this.username
 }
-
-output "address" {
-  value = aws_db_instance.this.address
-}
-
