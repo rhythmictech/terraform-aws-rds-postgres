@@ -96,7 +96,7 @@ variable "storage" {
 
 variable "ssm_path" {
   default     = ""
-  description = "Custom path for SSM parameter, only takes effect if create_ssm_secret is true. "
+  description = "Custom path for SSM parameter, only takes effect if `create_ssm_secret` is true. "
   type        = string
 }
 
