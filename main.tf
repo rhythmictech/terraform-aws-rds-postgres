@@ -96,6 +96,7 @@ variable "create_ssm_secret" {
 }
 
 resource "aws_secretsmanager_secret" "password" {
+  count       = var.create_secretmanager_secret ? 1 : 0
   name_prefix = var.name
   description = "${var.name} database password"
 
@@ -108,11 +109,13 @@ resource "aws_secretsmanager_secret" "password" {
 }
 
 resource "aws_secretsmanager_secret_version" "password_val" {
-  secret_id     = aws_secretsmanager_secret.password.id
+  count         = var.create_secretmanager_secret ? 1 : 0
+  secret_id     = join("", aws_secretsmanager_secret.password.id)
   secret_string = random_password.password.result
 }
 
-resource "aws_ssm_parameter" "secret" {
+resource "aws_ssm_parameter" "password" {
+  count       = var.create_ssm_secret ? 1 : 0
   name        = local.ssm_path
   description = "${var.name} database password"
   type        = "SecureString"
