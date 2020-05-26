@@ -24,7 +24,7 @@ output "password_secretsmanager_arn" {
 
 output "password_secretsmanager_version" {
   description = "The unique identifier of the version of the secret."
-  value       = var.create_secretmanager_secret ? aws_secretsmanager_secret_version.password_[0].version_id : ""
+  value       = var.create_secretmanager_secret ? aws_secretsmanager_secret_version.password_val[0].version_id : ""
 }
 
 output "password_ssm_arn" {

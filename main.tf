@@ -99,7 +99,7 @@ resource "aws_secretsmanager_secret" "password" {
 
 resource "aws_secretsmanager_secret_version" "password_val" {
   count         = var.create_secretmanager_secret ? 1 : 0
-  secret_id     = join("", aws_secretsmanager_secret.password.id)
+  secret_id     = join("", aws_secretsmanager_secret.password[*].id)
   secret_string = random_password.password.result
 }
 
