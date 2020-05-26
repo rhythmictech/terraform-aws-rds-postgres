@@ -27,15 +27,11 @@ Create a mysql RDS instance
 | backup\_retention\_period | How long to keep RDS backups (in days) | `string` | `5` | no |
 | engine | Which RDS Engine to use | `string` | `"postgres"` | no |
 | engine\_version | Version of database engine to use | `string` | `"11.5"` | no |
-| env | Environment being deployed to | `string` | n/a | yes |
 | instance\_class | What instance size to use | `string` | `"db.t3.small"` | no |
 | multi\_az | whether to make database multi-az | `string` | `true` | no |
 | name | common name for resources in this module | `string` | `"postgres-rds"` | no |
-| namespace | Namespace of this project/system | `string` | n/a | yes |
-| owner | Team/person responsible for resources defined within this project | `string` | n/a | yes |
 | pass\_version | Increment to force DB password change | `string` | `1` | no |
 | port | Port the database should listen on | `string` | `"5432"` | no |
-| region | Region resources are being deployed to | `string` | n/a | yes |
 | skip\_final\_snapshot | If true no final snapshot will be taken on termination | `string` | `false` | no |
 | storage | How much storage is available to the database | `string` | `20` | no |
 | storage\_type | What storage backend to use (gp2 or standard. io1 not supported) | `string` | `"gp2"` | no |
