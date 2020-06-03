@@ -17,6 +17,7 @@ resource "aws_db_instance" "this" {
   engine                              = var.engine
   engine_version                      = var.engine_version
   iam_database_authentication_enabled = true
+  identifier                          = var.identifier
   instance_class                      = var.instance_class
   multi_az                            = var.multi_az
   name                                = var.name

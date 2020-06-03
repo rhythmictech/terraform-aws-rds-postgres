@@ -52,6 +52,11 @@ variable "engine_version" {
   type        = string
 }
 
+variable "identifier" {
+  description = "Identifier for DB Instance"
+  type        = string
+}
+
 variable "instance_class" {
   default     = "db.t3.small"
   description = "What instance size to use"
