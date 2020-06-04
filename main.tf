@@ -16,7 +16,8 @@ resource "aws_db_instance" "this" {
   deletion_protection                 = true
   engine                              = var.engine
   engine_version                      = var.engine_version
-  iam_database_authentication_enabled = true
+  iam_database_authentication_enabled = var.iam_db_auth
+  identifier                          = var.identifier
   instance_class                      = var.instance_class
   multi_az                            = var.multi_az
   name                                = var.name
