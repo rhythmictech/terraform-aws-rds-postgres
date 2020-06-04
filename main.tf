@@ -5,7 +5,7 @@ terraform {
 }
 
 locals {
-  ssm_path = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-password")
+  ssm_path = coalesce(var.ssm_path, "/db/${var.identifier}/${var.username}-password")
 }
 
 resource "aws_db_instance" "this" {
@@ -25,7 +25,7 @@ resource "aws_db_instance" "this" {
   port                                = var.port
   storage_encrypted                   = true
   storage_type                        = var.storage_type
-  final_snapshot_identifier           = "${var.name}-final-snapshot"
+  final_snapshot_identifier           = "${var.identifier}-final-snapshot"
   skip_final_snapshot                 = var.skip_final_snapshot
   username                            = var.username
   vpc_security_group_ids              = [aws_security_group.this.id]
@@ -38,7 +38,7 @@ resource "aws_db_instance" "this" {
   tags = merge(
     var.tags,
     {
-      "Name" = "${var.name}-postgres-db"
+      "Name" = "${var.identifier}-postgres-db"
     },
   )
 }
@@ -49,7 +49,7 @@ resource "aws_db_subnet_group" "this" {
   tags = merge(
     var.tags,
     {
-      "Name" = "${var.name}-subnet-group"
+      "Name" = "${var.identifier}-subnet-group"
     },
   )
 }
@@ -69,7 +69,7 @@ resource "aws_security_group" "this" {
   tags = merge(
     var.tags,
     {
-      "Name" = "${var.name}-security-group"
+      "Name" = "${var.identifier}-security-group"
     },
   )
 }
@@ -87,13 +87,13 @@ resource "random_password" "password" {
 
 resource "aws_secretsmanager_secret" "password" {
   count       = var.create_secretmanager_secret ? 1 : 0
-  name_prefix = var.name
-  description = "${var.name} database password"
+  name_prefix = var.identifier
+  description = "${var.identifier} database password"
 
   tags = merge(
     var.tags,
     {
-      "Name" = "${var.name}-pass-secret"
+      "Name" = "${var.identifier}-pass-secret"
     },
   )
 }
@@ -107,14 +107,14 @@ resource "aws_secretsmanager_secret_version" "password_val" {
 resource "aws_ssm_parameter" "password" {
   count       = var.create_ssm_secret ? 1 : 0
   name        = local.ssm_path
-  description = "${var.name} database password"
+  description = "${var.identifier} database password"
   type        = "SecureString"
   value       = random_password.password.result
 
   tags = merge(
     var.tags,
     {
-      "Name" = "${var.name}-pass-secret"
+      "Name" = "${var.identifier}-pass-secret"
     },
   )
 }
