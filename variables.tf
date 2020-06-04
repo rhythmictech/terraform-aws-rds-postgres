@@ -52,6 +52,12 @@ variable "engine_version" {
   type        = string
 }
 
+variable "iam_db_auth" {
+  default     = false
+  description = "True to enable IAM DB authentication"
+  type        = bool
+}
+
 variable "identifier" {
   description = "Identifier for DB Instance"
   type        = string

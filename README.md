@@ -29,6 +29,7 @@ Create a postgres RDS instance
 | create\_ssm\_secret | True to create a SSM Parameter SecretString containing DB password | `bool` | `false` | no |
 | engine | Which RDS Engine to use | `string` | `"postgres"` | no |
 | engine\_version | Version of database engine to use | `string` | `"11.5"` | no |
+| iam\_db\_auth | True to enable IAM DB authentication | `bool` | `false` | no |
 | identifier | Identifier for DB Instance | `string` | n/a | yes |
 | instance\_class | What instance size to use | `string` | `"db.t3.small"` | no |
 | multi\_az | whether to make database multi-az | `string` | `true` | no |
