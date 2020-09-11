@@ -5,116 +5,70 @@ terraform {
 }
 
 locals {
-  ssm_path = coalesce(var.ssm_path, "/db/${var.identifier}/${var.username}-password")
+  create_password_secret    = var.password == null && var.create_secretmanager_secret ? true : false
+  create_password_parameter = var.password == null && var.create_ssm_secret ? true : false
+  final_snapshot_identifier = var.final_snapshot_identifier == null ? "${var.name}-final-snapshot" : var.final_snapshot_identifier
+  parameter_group_name      = length(var.parameters) > 0 ? aws_db_parameter_group.this[0].name : null
+  password                  = try(module.password.secret, random_password.password[0].result, var.password)
+  sg_name_prefix            = "${var.name}-access"
+  ssm_path                  = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-password")
+
+  db_tags = merge(
+    var.tags,
+    {
+      "Name" = "${var.name}-postgres"
+    },
+  )
+
+  sg_tags = merge(
+    var.tags,
+    map(
+      "Name", "${var.name}-access"
+    )
+  )
+}
+
+resource "aws_db_parameter_group" "this" {
+  count = length(var.parameters) > 0 ? 1 : 0
+
+  name_prefix = "${var.name}-param"
+
+  family = "postgres${var.engine_version}"
+
+  dynamic "parameter" {
+    iterator = each
+    for_each = var.parameters
+
+    content {
+      name  = each.value.name
+      value = each.value.value
+    }
+  }
 }
 
 resource "aws_db_instance" "this" {
   allocated_storage                   = var.storage
   backup_retention_period             = var.backup_retention_period
   copy_tags_to_snapshot               = true
-  db_subnet_group_name                = aws_db_subnet_group.this.id
-  deletion_protection                 = true
-  engine                              = var.engine
+  db_subnet_group_name                = var.subnet_group_name
+  deletion_protection                 = var.enable_deletion_protection
+  enabled_cloudwatch_logs_exports     = var.cloudwatch_log_exports
+  engine                              = "postgres"
   engine_version                      = var.engine_version
-  iam_database_authentication_enabled = var.iam_db_auth
+  final_snapshot_identifier           = local.final_snapshot_identifier
+  iam_database_authentication_enabled = var.iam_database_authentication_enabled
   identifier                          = var.identifier
+  identifier_prefix                   = var.identifier_prefix
   instance_class                      = var.instance_class
   multi_az                            = var.multi_az
   name                                = var.name
-  password                            = random_password.password.result
+  password                            = local.password
+  performance_insights_enabled        = var.performance_insights_enabled
   port                                = var.port
+  skip_final_snapshot                 = var.skip_final_snapshot
   storage_encrypted                   = true
   storage_type                        = var.storage_type
-  final_snapshot_identifier           = "${var.identifier}-final-snapshot"
-  skip_final_snapshot                 = var.skip_final_snapshot
+  tags                                = local.db_tags
   username                            = var.username
   vpc_security_group_ids              = [aws_security_group.this.id]
-
-  enabled_cloudwatch_logs_exports = [
-    "postgresql",
-    "upgrade",
-  ]
-
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "${var.identifier}-postgres-db"
-    },
-  )
-}
-
-resource "aws_db_subnet_group" "this" {
-  subnet_ids = var.subnet_ids
-
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "${var.identifier}-subnet-group"
-    },
-  )
-}
-
-resource "aws_security_group" "this" {
-  vpc_id = var.vpc_id
-
-  ingress {
-    from_port        = var.port
-    to_port          = var.port
-    protocol         = "tcp"
-    security_groups  = var.allowed_security_groups
-    cidr_blocks      = var.allowed_cidr_blocks
-    ipv6_cidr_blocks = var.allowed_ipv6_cidr_blocks
-  }
-
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "${var.identifier}-security-group"
-    },
-  )
-}
-
-resource "random_password" "password" {
-  length           = 40
-  special          = true
-  min_special      = 5
-  override_special = "!#%^&*()-_=+[]{}<>?"
-
-  keepers = {
-    pass_version = var.pass_version
-  }
-}
-
-resource "aws_secretsmanager_secret" "password" {
-  count       = var.create_secretmanager_secret ? 1 : 0
-  name_prefix = var.identifier
-  description = "${var.identifier} database password"
-
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "${var.identifier}-pass-secret"
-    },
-  )
-}
-
-resource "aws_secretsmanager_secret_version" "password_val" {
-  count         = var.create_secretmanager_secret ? 1 : 0
-  secret_id     = join("", aws_secretsmanager_secret.password[*].id)
-  secret_string = random_password.password.result
-}
-
-resource "aws_ssm_parameter" "password" {
-  count       = var.create_ssm_secret ? 1 : 0
-  name        = local.ssm_path
-  description = "${var.identifier} database password"
-  type        = "SecureString"
-  value       = random_password.password.result
-
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "${var.identifier}-pass-secret"
-    },
-  )
 }
