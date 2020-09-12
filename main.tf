@@ -60,13 +60,16 @@ resource "aws_db_instance" "this" {
   identifier                          = var.identifier
   identifier_prefix                   = var.identifier_prefix
   instance_class                      = var.instance_class
+  monitoring_interval                 = var.monitoring_interval
+  monitoring_role_arn                 = var.monitoring_role_arn
   multi_az                            = var.multi_az
   name                                = var.name
+  parameter_group_name                = local.parameter_group_name
   password                            = local.password
   performance_insights_enabled        = var.performance_insights_enabled
   port                                = var.port
   skip_final_snapshot                 = var.skip_final_snapshot
-  storage_encrypted                   = true
+  storage_encrypted                   = var.storage_encrypted
   storage_type                        = var.storage_type
   tags                                = local.db_tags
   username                            = var.username

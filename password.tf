@@ -13,7 +13,7 @@ module "password" {
 }
 
 resource "random_password" "password" {
-  count            = local.create_password_parameter ? 1 : 0
+  count = local.create_password_parameter ? 1 : 0
 
   length           = var.password_length
   special          = true

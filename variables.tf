@@ -125,7 +125,7 @@ variable "parameters" {
 
   default = [
     {
-      name = "client_encoding"
+      name  = "client_encoding"
       value = "UTF8"
     }
   ]
