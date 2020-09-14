@@ -1,3 +1,23 @@
+########################################
+# General Vars
+########################################
+
+variable "name" {
+  default     = "mysql-postgres"
+  description = "common name for resources in this module"
+  type        = string
+}
+
+variable "tags" {
+  default     = {}
+  description = "Tags to apply to supported resources"
+  type        = map(string)
+}
+
+########################################
+# Access Control Vars
+########################################
+
 variable "allowed_cidr_blocks" {
   default     = []
   description = "CIDR blocks allowed to reach the database"
@@ -10,99 +30,44 @@ variable "allowed_ipv6_cidr_blocks" {
   type        = list(string)
 }
 
-variable "allowed_password_chars" {
-  default     = "!#%^&*()-_=+[]{}<>?"
-  description = "What characters are allowed in the postgres password"
-  type        = string
-}
-
 variable "allowed_security_groups" {
   default     = []
   description = "IDs of security groups allowed to reach the database (not Names)"
   type        = list(string)
 }
 
-variable "backup_retention_period" {
-  default     = 5
-  description = "How long to keep RDS backups (in days)"
-  type        = string
-}
+########################################
+# DB Authentication Vars
+########################################
 
 variable "create_secretmanager_secret" {
   default     = true
-  description = "True to create a secretmanager secret containing DB password"
+  description = "True to create a secretmanager secret containing DB password (not used if `password` is set)"
   type        = bool
 }
 
 variable "create_ssm_secret" {
   default     = false
-  description = "True to create a SSM Parameter SecretString containing DB password"
+  description = "True to create a SSM Parameter SecretString containing DB password (not used if `password` is set)"
   type        = bool
 }
 
-variable "engine" {
-  default     = "postgres"
-  description = "Which RDS Engine to use"
+variable "password" {
+  default     = null
+  description = "Master password (if not set, one will be generated dynamically)"
   type        = string
 }
 
-variable "engine_version" {
-  default     = "11.5"
-  description = "Version of database engine to use"
-  type        = string
-}
-
-variable "iam_db_auth" {
-  default     = false
-  description = "True to enable IAM DB authentication"
-  type        = bool
-}
-
-variable "identifier" {
-  description = "Identifier for DB Instance"
-  type        = string
-}
-
-variable "instance_class" {
-  default     = "db.t3.small"
-  description = "What instance size to use"
-  type        = string
-}
-
-variable "multi_az" {
-  default     = true
-  description = "whether to make database multi-az"
-  type        = string
-}
-
-variable "name" {
-  default     = "postgres-rds"
-  description = "common name for resources in this module"
-  type        = string
+variable "password_length" {
+  default     = 30
+  description = "Master password length (not used if `password` is set)"
+  type        = number
 }
 
 variable "pass_version" {
   default     = 1
-  description = "Increment to force DB password change"
-  type        = string
-}
-
-variable "port" {
-  default     = "5432"
-  description = "Port the database should listen on"
-  type        = string
-}
-
-variable "skip_final_snapshot" {
-  default     = false
-  description = "If true no final snapshot will be taken on termination"
-  type        = string
-}
-
-variable "storage" {
-  default     = 20
-  description = "How much storage is available to the database"
-  type        = string
+  description = "Increment to force master user password change (not used if `password` is set)"
+  type        = number
 }
 
 variable "ssm_path" {
@@ -111,26 +76,153 @@ variable "ssm_path" {
   type        = string
 }
 
-variable "storage_type" {
-  default     = "gp2"
-  description = "What storage backend to use (gp2 or standard. io1 not supported)"
+########################################
+# Database Config Vars
+########################################
+
+variable "backup_retention_period" {
+  default     = 5
+  description = "How long to keep RDS backups (in days)"
   type        = string
 }
 
-variable "subnet_ids" {
-  description = "Subnets used for database"
+variable "cloudwatch_log_exports" {
+  description = "Log types to export to CloudWatch"
   type        = list(string)
+
+  default = [
+    "postgresql",
+    "upgrade"
+  ]
 }
 
-variable "tags" {
-  default     = {}
-  description = "common tags for all resources"
-  type        = map(string)
+variable "enable_deletion_protection" {
+  default     = true
+  description = "If `true`, deletion protection will be turned on for the RDS instance(s)"
+  type        = bool
+}
+
+variable "engine_version" {
+  default     = "11.5"
+  description = "Version of database engine to use"
+  type        = string
+}
+
+variable "final_snapshot_identifier" {
+  default     = null
+  description = "name of final snapshot (will be computed automatically if not specified)"
+  type        = string
+}
+
+variable "iam_database_authentication_enabled" {
+  default     = false
+  description = "True to enable IAM DB authentication"
+  type        = bool
+}
+
+variable "parameters" {
+  description = "Database parameters (will create parameter group if not null)"
+
+  default = [
+    {
+      name  = "client_encoding"
+      value = "UTF8"
+    }
+  ]
+
+  type = list(object({
+    name  = string
+    value = string
+  }))
+}
+
+variable "performance_insights_enabled" {
+  default     = false
+  description = "If true, performance insights will be enabled"
+  type        = bool
+}
+
+variable "skip_final_snapshot" {
+  default     = false
+  description = "If true no final snapshot will be taken on termination"
+  type        = bool
 }
 
 variable "username" {
-  default     = "postgres_user"
-  description = "username of master user"
+  default     = "postgres"
+  description = "Username of master user"
+  type        = string
+}
+
+########################################
+# Instance Vars
+########################################
+
+variable "identifier" {
+  default     = null
+  description = "DB identifier (not recommended, only used if `identifier_prefix` is not null)"
+  type        = string
+}
+
+variable "identifier_prefix" {
+  default     = null
+  description = "DB identifier prefix (will be generated by AWS automatically if not specified)"
+  type        = string
+}
+
+variable "instance_class" {
+  description = "What instance type to use"
+  type        = string
+}
+
+variable "monitoring_interval" {
+  default     = 0
+  description = "Monitoring interval in seconds (`0` to disable enhanced monitoring)"
+  type        = number
+}
+
+variable "monitoring_role_arn" {
+  default     = null
+  description = "Enhanced Monitoring ARN (blank to omit)"
+  type        = string
+}
+
+variable "multi_az" {
+  default     = true
+  description = "whether to make database multi-az"
+  type        = bool
+}
+
+variable "storage" {
+  default     = 20
+  description = "How much storage is available to the database"
+  type        = string
+}
+
+variable "storage_encrypted" {
+  default     = true
+  description = "Encrypt DB storage"
+  type        = bool
+}
+
+variable "storage_type" {
+  default     = "gp2"
+  description = "What storage backend to use (`gp2` or `standard`. io1 not supported)"
+  type        = string
+}
+
+########################################
+# Networking Vars
+########################################
+
+variable "port" {
+  default     = 5432
+  description = "Port the database should listen on"
+  type        = number
+}
+
+variable "subnet_group_name" {
+  description = "name of DB subnet group to place DB in"
   type        = string
 }
 
