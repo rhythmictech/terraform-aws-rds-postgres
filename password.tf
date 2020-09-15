@@ -7,7 +7,7 @@ module "password" {
 
   create_secret    = local.create_password_secret
   length           = var.password_length
-  override_special = "#$%^*()-=_+[]{};<>?,."
+  override_special = "#%^*()-=_+{};?,."
   pass_version     = var.pass_version
   tags             = var.tags
 }
