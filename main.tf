@@ -50,7 +50,9 @@ resource "aws_db_parameter_group" "this" {
 }
 
 resource "aws_db_instance" "this" {
-  name_prefix                         = regex(var.name, "/[^A-Za-Z0-9]/", "")
+  identifier        = var.identifier
+  identifier_prefix = var.identifier_prefix
+
   allocated_storage                   = var.storage
   backup_retention_period             = var.backup_retention_period
   copy_tags_to_snapshot               = true
@@ -61,12 +63,11 @@ resource "aws_db_instance" "this" {
   engine_version                      = var.engine_version
   final_snapshot_identifier           = local.final_snapshot_identifier
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
-  identifier                          = var.identifier
-  identifier_prefix                   = var.identifier_prefix
   instance_class                      = var.instance_class
   monitoring_interval                 = var.monitoring_interval
   monitoring_role_arn                 = var.monitoring_role_arn
   multi_az                            = var.multi_az
+  name                                = replace(var.name, "/[^A-Za-Z0-9]/", "")
   parameter_group_name                = local.parameter_group_name
   password                            = local.password
   performance_insights_enabled        = var.performance_insights_enabled
@@ -77,12 +78,4 @@ resource "aws_db_instance" "this" {
   tags                                = local.db_tags
   username                            = var.username
   vpc_security_group_ids              = [aws_security_group.this.id]
-
-  # Ignore changes to name and name_prefix so the transition to name_prefix doesn't break anything already using this.
-  lifecycle {
-    ignore_changes = [
-      name,
-      name_prefix
-    ]
-  }
 }
