@@ -33,7 +33,10 @@ resource "aws_db_parameter_group" "this" {
 
   name_prefix = "${var.name}-param"
 
-  family = "postgres${var.engine_version}"
+  family = coalesce(
+    var.parameter_group_family,
+    "postgres${replace(var.engine_version, "/\\.\\d+/", "")}" # strips the minor and patch digits from the version
+  )
 
   dynamic "parameter" {
     iterator = each
