@@ -33,7 +33,10 @@ resource "aws_db_parameter_group" "this" {
 
   name_prefix = "${var.name}-param"
 
-  family = "postgres${var.engine_version}"
+  family = coalesce(
+    var.parameter_group_family,
+    "postgres${replace(var.engine_version, "/\\.\\d+/", "")}" # strips the minor and patch digits from the version
+  )
 
   dynamic "parameter" {
     iterator = each
@@ -47,6 +50,9 @@ resource "aws_db_parameter_group" "this" {
 }
 
 resource "aws_db_instance" "this" {
+  identifier        = var.identifier
+  identifier_prefix = var.identifier_prefix
+
   allocated_storage                   = var.storage
   backup_retention_period             = var.backup_retention_period
   copy_tags_to_snapshot               = true
@@ -57,13 +63,11 @@ resource "aws_db_instance" "this" {
   engine_version                      = var.engine_version
   final_snapshot_identifier           = local.final_snapshot_identifier
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
-  identifier                          = var.identifier
-  identifier_prefix                   = var.identifier_prefix
   instance_class                      = var.instance_class
   monitoring_interval                 = var.monitoring_interval
   monitoring_role_arn                 = var.monitoring_role_arn
   multi_az                            = var.multi_az
-  name                                = var.name
+  name                                = replace(var.name, "/[^A-Za-z0-9]/", "")
   parameter_group_name                = local.parameter_group_name
   password                            = local.password
   performance_insights_enabled        = var.performance_insights_enabled

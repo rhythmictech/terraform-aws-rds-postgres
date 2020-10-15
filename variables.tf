@@ -136,6 +136,12 @@ variable "parameters" {
   }))
 }
 
+variable "parameter_group_family" {
+  default     = ""
+  description = "Parameter Group Family. Need to make explicit for Postgres 9.x"
+  type        = string
+}
+
 variable "performance_insights_enabled" {
   default     = false
   description = "If true, performance insights will be enabled"

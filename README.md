@@ -49,6 +49,7 @@ Create and manage an RDS PostgreSQL instance. Includes the ability to manage the
 | monitoring\_role\_arn | Enhanced Monitoring ARN (blank to omit) | `string` | `null` | no |
 | multi\_az | whether to make database multi-az | `bool` | `true` | no |
 | name | common name for resources in this module | `string` | `"mysql-postgres"` | no |
+| parameter\_group\_family | Parameter Group Family. Need to make explicit for Postgres 9.x | `string` | `""` | no |
 | parameters | Database parameters (will create parameter group if not null) | <pre>list(object({<br>    name  = string<br>    value = string<br>  }))</pre> | <pre>[<br>  {<br>    "name": "client_encoding",<br>    "value": "UTF8"<br>  }<br>]</pre> | no |
 | pass\_version | Increment to force master user password change (not used if `password` is set) | `number` | `1` | no |
 | password | Master password (if not set, one will be generated dynamically) | `string` | `null` | no |
