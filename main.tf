@@ -1,9 +1,3 @@
-terraform {
-  required_providers {
-    random = ">= 2.2.0"
-  }
-}
-
 locals {
   create_password_secret    = var.password == null && var.create_secretmanager_secret ? true : false
   create_password_parameter = var.password == null && var.create_ssm_secret ? true : false
