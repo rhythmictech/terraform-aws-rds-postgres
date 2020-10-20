@@ -44,8 +44,8 @@ resource "aws_db_parameter_group" "this" {
 }
 
 resource "aws_db_instance" "this" {
-  identifier        = var.identifier
-  identifier_prefix = var.identifier_prefix
+  identifier        = substr(var.identifier, 0, 63)
+  identifier_prefix = substr(var.identifier_prefix, 0, 36)
 
   allocated_storage                   = var.storage
   backup_retention_period             = var.backup_retention_period
