@@ -15,14 +15,14 @@ Create and manage an RDS PostgreSQL instance. Includes the ability to manage the
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12.19 |
-| aws | ~> 2.69.0 |
+| aws | >= 2.69 |
 | random | >= 2.2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 2.69.0 |
+| aws | >= 2.69 |
 | random | >= 2.2.0 |
 
 ## Inputs
