@@ -39,6 +39,7 @@ Create and manage an RDS PostgreSQL instance. Includes the ability to manage the
 | cloudwatch\_log\_exports | Log types to export to CloudWatch | `list(string)` | <pre>[<br>  "postgresql",<br>  "upgrade"<br>]</pre> | no |
 | create\_secretmanager\_secret | True to create a secretmanager secret containing DB password (not used if `password` is set) | `bool` | `true` | no |
 | create\_ssm\_secret | True to create a SSM Parameter SecretString containing DB password (not used if `password` is set) | `bool` | `false` | no |
+| database\_name | Name of the initial database to create. (null for none) | `string` | `null` | no |
 | enable\_deletion\_protection | If `true`, deletion protection will be turned on for the RDS instance(s) | `bool` | `true` | no |
 | engine\_version | Version of database engine to use | `string` | `"11.5"` | no |
 | final\_snapshot\_identifier | name of final snapshot (will be computed automatically if not specified) | `string` | `null` | no |
