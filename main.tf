@@ -61,7 +61,7 @@ resource "aws_db_instance" "this" {
   monitoring_interval                 = var.monitoring_interval
   monitoring_role_arn                 = var.monitoring_role_arn
   multi_az                            = var.multi_az
-  name                                = replace(var.name, "/[^A-Za-z0-9]/", "")
+  name                                = var.database_name
   parameter_group_name                = local.parameter_group_name
   password                            = local.password
   performance_insights_enabled        = var.performance_insights_enabled
