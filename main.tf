@@ -44,8 +44,8 @@ resource "aws_db_parameter_group" "this" {
 }
 
 resource "aws_db_instance" "this" {
-  identifier        = var.identifier
-  identifier_prefix = var.identifier_prefix
+  identifier        = try(substr(var.identifier, 0, 63), null)
+  identifier_prefix = try(substr(var.identifier_prefix, 0, 36), null)
 
   allocated_storage                   = var.storage
   backup_retention_period             = var.backup_retention_period
@@ -61,7 +61,7 @@ resource "aws_db_instance" "this" {
   monitoring_interval                 = var.monitoring_interval
   monitoring_role_arn                 = var.monitoring_role_arn
   multi_az                            = var.multi_az
-  name                                = replace(var.name, "/[^A-Za-z0-9]/", "")
+  name                                = var.database_name
   parameter_group_name                = local.parameter_group_name
   password                            = local.password
   performance_insights_enabled        = var.performance_insights_enabled
