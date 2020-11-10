@@ -183,7 +183,7 @@ variable "monitoring_interval" {
 
 variable "monitoring_role_arn" {
   default     = null
-  description = "Enhanced Monitoring ARN (blank to omit)"
+  description = "Enhanced Monitoring ARN (if `monitoring_interval > 0` and this is omitted, a role will be created automatically)"
   type        = string
 }
 
