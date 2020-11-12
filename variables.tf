@@ -96,6 +96,12 @@ variable "cloudwatch_log_exports" {
   ]
 }
 
+variable "database_name" {
+  default     = null
+  description = "Name of the initial database to create. (null for none)"
+  type        = string
+}
+
 variable "enable_deletion_protection" {
   default     = true
   description = "If `true`, deletion protection will be turned on for the RDS instance(s)"
@@ -134,6 +140,12 @@ variable "parameters" {
     name  = string
     value = string
   }))
+}
+
+variable "parameter_group_family" {
+  default     = ""
+  description = "Parameter Group Family. Need to make explicit for Postgres 9.x"
+  type        = string
 }
 
 variable "performance_insights_enabled" {

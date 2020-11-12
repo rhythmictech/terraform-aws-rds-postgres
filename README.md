@@ -15,14 +15,14 @@ Create and manage an RDS PostgreSQL instance. Includes the ability to manage the
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12.19 |
-| aws | ~> 2.69.0 |
+| aws | >= 2.69 |
 | random | >= 2.2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 2.69.0 |
+| aws | >= 2.69 |
 | random | >= 2.2.0 |
 
 ## Inputs
@@ -39,6 +39,7 @@ Create and manage an RDS PostgreSQL instance. Includes the ability to manage the
 | cloudwatch\_log\_exports | Log types to export to CloudWatch | `list(string)` | <pre>[<br>  "postgresql",<br>  "upgrade"<br>]</pre> | no |
 | create\_secretmanager\_secret | True to create a secretmanager secret containing DB password (not used if `password` is set) | `bool` | `true` | no |
 | create\_ssm\_secret | True to create a SSM Parameter SecretString containing DB password (not used if `password` is set) | `bool` | `false` | no |
+| database\_name | Name of the initial database to create. (null for none) | `string` | `null` | no |
 | enable\_deletion\_protection | If `true`, deletion protection will be turned on for the RDS instance(s) | `bool` | `true` | no |
 | engine\_version | Version of database engine to use | `string` | `"11.5"` | no |
 | final\_snapshot\_identifier | name of final snapshot (will be computed automatically if not specified) | `string` | `null` | no |
@@ -49,6 +50,7 @@ Create and manage an RDS PostgreSQL instance. Includes the ability to manage the
 | monitoring\_role\_arn | Enhanced Monitoring ARN (if `monitoring_interval > 0` and this is omitted, a role will be created automatically) | `string` | `null` | no |
 | multi\_az | whether to make database multi-az | `bool` | `true` | no |
 | name | common name for resources in this module | `string` | `"mysql-postgres"` | no |
+| parameter\_group\_family | Parameter Group Family. Need to make explicit for Postgres 9.x | `string` | `""` | no |
 | parameters | Database parameters (will create parameter group if not null) | <pre>list(object({<br>    name  = string<br>    value = string<br>  }))</pre> | <pre>[<br>  {<br>    "name": "client_encoding",<br>    "value": "UTF8"<br>  }<br>]</pre> | no |
 | pass\_version | Increment to force master user password change (not used if `password` is set) | `number` | `1` | no |
 | password | Master password (if not set, one will be generated dynamically) | `string` | `null` | no |
