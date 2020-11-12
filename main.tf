@@ -9,6 +9,7 @@ locals {
   create_password_parameter = var.password == null && var.create_ssm_secret ? true : false
   final_snapshot_identifier = var.final_snapshot_identifier == null ? "${var.name}-final-snapshot" : var.final_snapshot_identifier
   monitoring_role_arn       = try(aws_iam_role.this[0].arn, var.monitoring_role_arn)
+  parameter_group_family    = "postgres${split(".", var.engine_version)[0]}"
   parameter_group_name      = length(var.parameters) > 0 ? aws_db_parameter_group.this[0].name : null
   password                  = try(module.password.secret, random_password.password[0].result, var.password)
   sg_name_prefix            = "${var.name}-access"
@@ -34,7 +35,7 @@ resource "aws_db_parameter_group" "this" {
 
   name_prefix = "${var.name}-param"
 
-  family = "postgres${var.engine_version}"
+  family = local.parameter_group_family
 
   dynamic "parameter" {
     iterator = each
