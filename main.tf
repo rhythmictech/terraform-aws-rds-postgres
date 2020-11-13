@@ -2,6 +2,7 @@ locals {
   create_password_secret    = var.password == null && var.create_secretmanager_secret ? true : false
   create_password_parameter = var.password == null && var.create_ssm_secret ? true : false
   final_snapshot_identifier = var.final_snapshot_identifier == null ? "${var.name}-final-snapshot" : var.final_snapshot_identifier
+  monitoring_role_arn       = try(aws_iam_role.this[0].arn, var.monitoring_role_arn)
   parameter_group_name      = length(var.parameters) > 0 ? aws_db_parameter_group.this[0].name : null
   password                  = try(module.password.secret, random_password.password[0].result, var.password)
   sg_name_prefix            = "${var.name}-access"
@@ -43,6 +44,23 @@ resource "aws_db_parameter_group" "this" {
   }
 }
 
+data "aws_iam_policy_document" "this" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["monitoring.rds.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "this" {
+  count              = var.monitoring_interval > 0 && var.monitoring_role_arn == null ? 1 : 0
+  name_prefix        = var.name
+  assume_role_policy = data.aws_iam_policy_document.this.json
+}
+
 resource "aws_db_instance" "this" {
   identifier        = try(substr(var.identifier, 0, 63), null)
   identifier_prefix = try(substr(var.identifier_prefix, 0, 36), null)
@@ -59,7 +77,7 @@ resource "aws_db_instance" "this" {
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   instance_class                      = var.instance_class
   monitoring_interval                 = var.monitoring_interval
-  monitoring_role_arn                 = var.monitoring_role_arn
+  monitoring_role_arn                 = local.monitoring_role_arn
   multi_az                            = var.multi_az
   name                                = var.database_name
   parameter_group_name                = local.parameter_group_name
