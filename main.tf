@@ -4,7 +4,7 @@ locals {
   final_snapshot_identifier = var.final_snapshot_identifier == null ? "${var.name}-final-snapshot" : var.final_snapshot_identifier
   monitoring_role_arn       = try(aws_iam_role.this[0].arn, var.monitoring_role_arn)
   parameter_group_name      = length(var.parameters) > 0 ? aws_db_parameter_group.this[0].name : null
-  password                  = try(module.password.secret, random_password.password[0].result, var.password)
+  password                  = try(var.password,module.password.secret, random_password.password[0].result)
   sg_name_prefix            = "${var.name}-access"
   ssm_path                  = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-password")
 
