@@ -72,7 +72,7 @@ Create and manage an RDS PostgreSQL instance. Includes the ability to manage the
 | <a name="input_multi_az"></a> [multi\_az](#input\_multi\_az) | whether to make database multi-az | `bool` | `true` | no |
 | <a name="input_name"></a> [name](#input\_name) | common name for resources in this module | `string` | `"mysql-postgres"` | no |
 | <a name="input_parameter_group_family"></a> [parameter\_group\_family](#input\_parameter\_group\_family) | Parameter Group Family. Need to make explicit for Postgres 9.x | `string` | `""` | no |
-| <a name="input_parameters"></a> [parameters](#input\_parameters) | Database parameters (will create parameter group if not null) | <pre>list(object({<br>    name  = string<br>    value = string<br>  }))</pre> | <pre>[<br>  {<br>    "name": "client_encoding",<br>    "value": "UTF8"<br>  }<br>]</pre> | no |
+| <a name="input_parameters"></a> [parameters](#input\_parameters) | Database parameters (will create parameter group if not null) | <pre>list(object({<br>    apply_method = string<br>    name         = string<br>    value        = string<br>  }))</pre> | <pre>[<br>  {<br>    "apply_method": "immediate",<br>    "name": "client_encoding",<br>    "value": "UTF8"<br>  }<br>]</pre> | no |
 | <a name="input_pass_version"></a> [pass\_version](#input\_pass\_version) | Increment to force master user password change (not used if `password` is set) | `number` | `1` | no |
 | <a name="input_password"></a> [password](#input\_password) | Master password (if not set, one will be generated dynamically) | `string` | `null` | no |
 | <a name="input_password_length"></a> [password\_length](#input\_password\_length) | Master password length (not used if `password` is set) | `number` | `30` | no |
