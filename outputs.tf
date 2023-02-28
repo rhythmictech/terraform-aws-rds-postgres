@@ -1,22 +1,26 @@
+
+locals {
+  db_instance = var.ignore_engine_version_change ? aws_db_instance.this_ignore_engine_version[0] : aws_db_instance.this[0]
+}
 output "address" {
   description = "RDS database address"
-  value       = aws_db_instance.this.address
+  value       = local.db_instance.address
 }
 
 output "instance_connection_info" {
   description = "Object containing connection info"
   value = {
-    address  = aws_db_instance.this.address
-    endpoint = aws_db_instance.this.endpoint
-    id       = aws_db_instance.this.id
-    port     = aws_db_instance.this.port
-    username = aws_db_instance.this.username
+    address  = local.db_instance.address
+    endpoint = local.db_instance.endpoint
+    id       = local.db_instance.id
+    port     = local.db_instance.port
+    username = local.db_instance.username
   }
 }
 
 output "instance_id" {
   description = "Instance ID of RDS DB"
-  value       = aws_db_instance.this.id
+  value       = local.db_instance.id
 }
 
 output "password_secretsmanager_arn" {
