@@ -126,6 +126,12 @@ variable "iam_database_authentication_enabled" {
   type        = bool
 }
 
+variable "ignore_engine_version_change" {
+  default     = true
+  description = "Ignore changes to the `var.engine_version` caused by automatic upgrades"
+  type        = bool
+}
+
 variable "parameters" {
   description = "Database parameters (will create parameter group if not null)"
 
