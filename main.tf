@@ -41,6 +41,10 @@ resource "aws_db_instance" "this" {
       "Name" = "${var.identifier}-postgres-db"
     },
   )
+
+  lifecycle {
+    ignore_changes = [engine_version]
+  }
 }
 
 resource "aws_db_subnet_group" "this" {
