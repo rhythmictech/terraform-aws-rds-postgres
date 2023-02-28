@@ -1,6 +1,6 @@
 
 locals {
-  db_instance = var.ignore_engine_version_change ? aws_db_instance.this_ignore_engine_version[0] : aws_db_instance.this[0]
+  db_instance = var.ignore_engine_version_and_password_changes ? aws_db_instance.this_ignore[0] : aws_db_instance.this[0]
 }
 output "address" {
   description = "RDS database address"
