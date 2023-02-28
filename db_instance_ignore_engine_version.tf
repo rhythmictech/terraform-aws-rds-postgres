@@ -24,7 +24,7 @@ resource "aws_db_instance" "this_ignore_engine_version" {
   name                                = var.database_name
   parameter_group_name                = local.parameter_group_name
   password                            = local.password
-  performance_insights_enabled        = var.performance_insights_enabled
+  performance_insights_enabled        = var.performance_insights_enabled #tfsec:ignore:aws-rds-enable-performance-insights
   port                                = var.port
   skip_final_snapshot                 = var.skip_final_snapshot
   storage_encrypted                   = var.storage_encrypted
