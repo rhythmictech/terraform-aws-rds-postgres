@@ -2,7 +2,7 @@
 # make sure the db instii are in line with
 #   dif db_instance*.tf
 resource "aws_db_instance" "this" {
-  count = var.ignore_engine_version_change ? 0 : 1
+  count = var.ignore_engine_version_and_password_changes ? 0 : 1
 
   identifier        = try(substr(var.identifier, 0, 63), null)
   identifier_prefix = try(substr(var.identifier_prefix, 0, 36), null)

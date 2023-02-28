@@ -1,8 +1,8 @@
 
 # make sure the db instii are in line with
 #   dif db_instance*.tf
-resource "aws_db_instance" "this_ignore_engine_version" {
-  count = var.ignore_engine_version_change ? 1 : 0
+resource "aws_db_instance" "this_ignore" {
+  count = var.ignore_engine_version_and_password_changes ? 1 : 0
 
   identifier        = try(substr(var.identifier, 0, 63), null)
   identifier_prefix = try(substr(var.identifier_prefix, 0, 36), null)
@@ -34,6 +34,6 @@ resource "aws_db_instance" "this_ignore_engine_version" {
   vpc_security_group_ids              = [aws_security_group.this.id]
 
   lifecycle {
-    ignore_changes = [engine_version]
+    ignore_changes = [engine_version, password]
   }
 }
