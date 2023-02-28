@@ -38,8 +38,9 @@ resource "aws_db_parameter_group" "this" {
     for_each = var.parameters
 
     content {
-      name  = each.value.name
-      value = each.value.value
+      apply_method = each.value.apply_method
+      name         = each.value.name
+      value        = each.value.value
     }
   }
 }
