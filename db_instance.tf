@@ -10,6 +10,7 @@ resource "aws_db_instance" "this" {
   allocated_storage                   = var.storage
   backup_retention_period             = var.backup_retention_period
   copy_tags_to_snapshot               = true
+  db_name                             = var.database_name
   db_subnet_group_name                = var.subnet_group_name
   deletion_protection                 = var.enable_deletion_protection
   enabled_cloudwatch_logs_exports     = var.cloudwatch_log_exports
@@ -21,7 +22,6 @@ resource "aws_db_instance" "this" {
   monitoring_interval                 = var.monitoring_interval
   monitoring_role_arn                 = local.monitoring_role_arn
   multi_az                            = var.multi_az
-  name                                = var.database_name
   parameter_group_name                = local.parameter_group_name
   password                            = local.password
   performance_insights_enabled        = var.performance_insights_enabled
