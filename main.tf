@@ -20,7 +20,7 @@ resource "aws_db_instance" "this" {
   identifier                          = var.identifier
   instance_class                      = var.instance_class
   multi_az                            = var.multi_az
-  name                                = var.name
+  db_name                                = var.name
   password                            = random_password.password.result
   port                                = var.port
   storage_encrypted                   = true
