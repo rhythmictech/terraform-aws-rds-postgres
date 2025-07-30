@@ -2,8 +2,6 @@
 # make sure the db instii are in line with
 #   dif db_instance*.tf
 resource "aws_db_instance" "this" {
-  count = var.ignore_engine_version_and_password_changes ? 0 : 1
-
   identifier        = try(substr(var.identifier, 0, 63), null)
   identifier_prefix = try(substr(var.identifier_prefix, 0, 36), null)
 
@@ -23,7 +21,9 @@ resource "aws_db_instance" "this" {
   monitoring_role_arn                 = local.monitoring_role_arn
   multi_az                            = var.multi_az
   parameter_group_name                = local.parameter_group_name
-  password                            = local.password
+  password                            = local.use_managed_master_user_secret ? null : local.password
+  manage_master_user_password         = local.use_managed_master_user_secret
+  master_user_secret_kms_key_id       = local.use_managed_master_user_secret ? var.master_user_secret_kms_key_id : null
   performance_insights_enabled        = var.performance_insights_enabled
   port                                = var.port
   skip_final_snapshot                 = var.skip_final_snapshot
@@ -32,4 +32,11 @@ resource "aws_db_instance" "this" {
   tags                                = local.db_tags
   username                            = var.username
   vpc_security_group_ids              = [aws_security_group.this.id]
+
+  lifecycle {
+    ignore_changes = compact([
+      var.ignore_password_changes ? "password" : null,
+      var.ignore_engine_version_changes ? "engine_version" : null
+    ])
+  }
 }

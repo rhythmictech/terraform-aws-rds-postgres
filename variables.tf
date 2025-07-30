@@ -41,15 +41,22 @@ variable "allowed_security_groups" {
 ########################################
 
 variable "create_secretmanager_secret" {
-  default     = true
-  description = "True to create a secretmanager secret containing DB password (not used if `password` is set)"
+  default     = false
+  description = "True to create a secretmanager secret containing DB password (not used if `password` is set or `manage_master_user_password` is true)"
   type        = bool
 }
 
-variable "create_ssm_secret" {
-  default     = false
-  description = "True to create a SSM Parameter SecretString containing DB password (not used if `password` is set)"
+
+variable "manage_master_user_password" {
+  default     = true
+  description = "Set to true to allow RDS to manage the master user password in Secrets Manager (recommended). Takes precedence over create_secretmanager_secret and create_ssm_secret"
   type        = bool
+}
+
+variable "master_user_secret_kms_key_id" {
+  default     = null
+  description = "The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key"
+  type        = string
 }
 
 variable "password" {
@@ -70,11 +77,6 @@ variable "pass_version" {
   type        = number
 }
 
-variable "ssm_path" {
-  default     = ""
-  description = "Custom path for SSM parameter, only takes effect if `create_ssm_secret` is true. "
-  type        = string
-}
 
 ########################################
 # Database Config Vars
@@ -126,9 +128,15 @@ variable "iam_database_authentication_enabled" {
   type        = bool
 }
 
-variable "ignore_engine_version_and_password_changes" {
+variable "ignore_password_changes" {
   default     = true
-  description = "Ignore changes to the `var.engine_version` and the db `password` that might be caused by automatic upgrades"
+  description = "Ignore changes to the db `password` that might be caused by automatic upgrades"
+  type        = bool
+}
+
+variable "ignore_engine_version_changes" {
+  default     = true
+  description = "Ignore changes to the `var.engine_version` that might be caused by automatic upgrades"
   type        = bool
 }
 

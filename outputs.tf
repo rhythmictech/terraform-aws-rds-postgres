@@ -1,6 +1,6 @@
 
 locals {
-  db_instance = var.ignore_engine_version_and_password_changes ? aws_db_instance.this_ignore[0] : aws_db_instance.this[0]
+  db_instance = aws_db_instance.this
 }
 output "address" {
   description = "RDS database address"
@@ -33,20 +33,15 @@ output "password_secretsmanager_version" {
   value       = try(module.password.version_id, null)
 }
 
-output "password_ssm_parameter_arn" {
-  description = "The ARN of the SecretManager Secret."
-  value       = try(aws_ssm_parameter.password[0].arn, null)
+output "master_user_secret" {
+  description = "The master user secret when using RDS managed password"
+  value = local.use_managed_master_user_secret ? {
+    secret_arn    = try(local.db_instance.master_user_secret[0].secret_arn, null)
+    secret_status = try(local.db_instance.master_user_secret[0].secret_status, null)
+    kms_key_id    = try(local.db_instance.master_user_secret[0].kms_key_id, null)
+  } : null
 }
 
-output "password_ssm_parameter_name" {
-  description = "The name of the parameter."
-  value       = try(aws_ssm_parameter.password[0].name, null)
-}
-
-output "password_ssm_parameter_version" {
-  description = "The unique identifier of the version of the secret."
-  value       = try(aws_ssm_parameter.password[0].version, null)
-}
 
 output "username" {
   description = "The master username for the database."

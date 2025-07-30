@@ -1,12 +1,13 @@
 locals {
-  create_password_secret    = var.password == null && var.create_secretmanager_secret ? true : false
-  create_password_parameter = var.password == null && var.create_ssm_secret ? true : false
-  final_snapshot_identifier = var.final_snapshot_identifier == null ? "${var.name}-final-snapshot" : var.final_snapshot_identifier
-  monitoring_role_arn       = try(aws_iam_role.this[0].arn, var.monitoring_role_arn)
-  parameter_group_name      = length(var.parameters) > 0 ? aws_db_parameter_group.this[0].name : null
-  password                  = try(var.password, module.password.secret, random_password.password[0].result)
-  sg_name_prefix            = "${var.name}-access"
-  ssm_path                  = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-password")
+  # Password management precedence: var.password > manage_master_user_password > create_secretmanager_secret
+  use_managed_master_user_secret = var.password == null && var.manage_master_user_password
+  create_password_secret         = var.password == null && !var.manage_master_user_password && var.create_secretmanager_secret
+  
+  final_snapshot_identifier     = var.final_snapshot_identifier == null ? "${var.name}-final-snapshot" : var.final_snapshot_identifier
+  monitoring_role_arn            = try(aws_iam_role.this[0].arn, var.monitoring_role_arn)
+  parameter_group_name           = length(var.parameters) > 0 ? aws_db_parameter_group.this[0].name : null
+  password                       = var.password != null ? var.password : (local.create_password_secret ? module.password.secret : null)
+  sg_name_prefix                 = "${var.name}-access"
 
   db_tags = merge(
     var.tags,
@@ -22,6 +23,7 @@ locals {
     }
   )
 }
+
 
 resource "aws_db_parameter_group" "this" {
   count = length(var.parameters) > 0 ? 1 : 0
