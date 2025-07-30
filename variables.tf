@@ -128,9 +128,15 @@ variable "iam_database_authentication_enabled" {
   type        = bool
 }
 
-variable "ignore_engine_version_and_password_changes" {
+variable "ignore_password_changes" {
   default     = true
-  description = "Ignore changes to the `var.engine_version` and the db `password` that might be caused by automatic upgrades"
+  description = "Ignore changes to the db `password` that might be caused by automatic upgrades"
+  type        = bool
+}
+
+variable "ignore_engine_version_changes" {
+  default     = true
+  description = "Ignore changes to the `var.engine_version` that might be caused by automatic upgrades"
   type        = bool
 }
 

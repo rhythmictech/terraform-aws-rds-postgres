@@ -2,8 +2,6 @@
 # make sure the db instii are in line with
 #   dif db_instance*.tf
 resource "aws_db_instance" "this" {
-  count = var.ignore_engine_version_and_password_changes ? 0 : 1
-
   identifier        = try(substr(var.identifier, 0, 63), null)
   identifier_prefix = try(substr(var.identifier_prefix, 0, 36), null)
 
@@ -34,4 +32,11 @@ resource "aws_db_instance" "this" {
   tags                                = local.db_tags
   username                            = var.username
   vpc_security_group_ids              = [aws_security_group.this.id]
+
+  lifecycle {
+    ignore_changes = compact([
+      var.ignore_password_changes ? "password" : null,
+      var.ignore_engine_version_changes ? "engine_version" : null
+    ])
+  }
 }
