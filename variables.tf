@@ -46,11 +46,6 @@ variable "create_secretmanager_secret" {
   type        = bool
 }
 
-variable "create_ssm_secret" {
-  default     = false
-  description = "True to create a SSM Parameter SecretString containing DB password (not used if `password` is set or `manage_master_user_password` is true)"
-  type        = bool
-}
 
 variable "manage_master_user_password" {
   default     = true
@@ -82,11 +77,6 @@ variable "pass_version" {
   type        = number
 }
 
-variable "ssm_path" {
-  default     = ""
-  description = "Custom path for SSM parameter, only takes effect if `create_ssm_secret` is true. "
-  type        = string
-}
 
 ########################################
 # Database Config Vars

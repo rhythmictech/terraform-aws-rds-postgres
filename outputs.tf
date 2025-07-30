@@ -42,20 +42,6 @@ output "master_user_secret" {
   } : null
 }
 
-output "password_ssm_parameter_arn" {
-  description = "The ARN of the SecretManager Secret."
-  value       = try(aws_ssm_parameter.password[0].arn, null)
-}
-
-output "password_ssm_parameter_name" {
-  description = "The name of the parameter."
-  value       = try(aws_ssm_parameter.password[0].name, null)
-}
-
-output "password_ssm_parameter_version" {
-  description = "The unique identifier of the version of the secret."
-  value       = try(aws_ssm_parameter.password[0].version, null)
-}
 
 output "username" {
   description = "The master username for the database."

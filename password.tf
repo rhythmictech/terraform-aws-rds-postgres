@@ -12,31 +12,3 @@ module "password" {
   tags             = var.tags
 }
 
-resource "random_password" "password" {
-  count = local.create_password_parameter ? 1 : 0
-
-  length           = var.password_length
-  special          = true
-  override_special = "#$%^*()-=_+[]{};<>?,."
-
-  keepers = {
-    pass_version = var.pass_version
-  }
-}
-
-resource "aws_ssm_parameter" "password" {
-  count = local.create_password_parameter ? 1 : 0
-
-  name = local.ssm_path
-
-  description = "${var.name} database password (username ${var.username})"
-  type        = "SecureString"
-  value       = random_password.password[0].result
-
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "${var.name}-pass-secret"
-    },
-  )
-}

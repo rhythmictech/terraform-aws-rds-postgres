@@ -6,16 +6,15 @@
 [![pre-commit-check](https://github.com/rhythmictech/terraform-aws-rds-postgres/workflows/pre-commit-check/badge.svg?branch=master&event=push)](https://github.com/rhythmictech/terraform-aws-rds-postgres/actions?query=workflow%3Apre-commit-check+event%3Apush+branch%3Amaster)
 <a href="https://twitter.com/intent/follow?screen_name=RhythmicTech"><img src="https://img.shields.io/twitter/follow/RhythmicTech?style=social&logo=twitter" alt="follow on Twitter"></a>
 
-Create and manage an RDS PostgreSQL instance. Includes the ability to manage the master password using RDS-managed Secrets Manager (with automatic rotation), external Secrets Manager, or SSM Parameter Store. Also manages the security group that controls RDS access.
+Create and manage an RDS PostgreSQL instance. Includes the ability to manage the master password using RDS-managed Secrets Manager (with automatic rotation) or external Secrets Manager. Also manages the security group that controls RDS access.
 
 ## Password Management Options
 
-This module supports several password management strategies (in order of precedence):
+This module supports two password management strategies (in order of precedence):
 
 1. **Manual Password** (`var.password != null`): Use a manually specified password
 2. **RDS-Managed Secrets Manager** (`manage_master_user_password = true`, default): RDS automatically creates and manages a secret in Secrets Manager with automatic rotation capabilities
 3. **External Secrets Manager** (`create_secretmanager_secret = true`): Create a separate Secrets Manager secret (legacy approach)
-4. **SSM Parameter Store** (`create_ssm_secret = true`): Store password in SSM Parameter Store as SecureString
 
 The recommended approach is to use RDS-managed Secrets Manager (`manage_master_user_password = true`) as it provides automatic password rotation and tight integration with RDS.
 

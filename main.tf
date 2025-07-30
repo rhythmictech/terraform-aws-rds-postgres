@@ -1,15 +1,13 @@
 locals {
-  # Password management precedence: var.password > manage_master_user_password > create_secretmanager_secret > create_ssm_secret
+  # Password management precedence: var.password > manage_master_user_password > create_secretmanager_secret
   use_managed_master_user_secret = var.password == null && var.manage_master_user_password
   create_password_secret         = var.password == null && !var.manage_master_user_password && var.create_secretmanager_secret
-  create_password_parameter      = var.password == null && !var.manage_master_user_password && !var.create_secretmanager_secret && var.create_ssm_secret
   
   final_snapshot_identifier     = var.final_snapshot_identifier == null ? "${var.name}-final-snapshot" : var.final_snapshot_identifier
   monitoring_role_arn            = try(aws_iam_role.this[0].arn, var.monitoring_role_arn)
   parameter_group_name           = length(var.parameters) > 0 ? aws_db_parameter_group.this[0].name : null
-  password                       = var.password != null ? var.password : (local.create_password_secret ? module.password.secret : (local.create_password_parameter ? random_password.password[0].result : null))
+  password                       = var.password != null ? var.password : (local.create_password_secret ? module.password.secret : null)
   sg_name_prefix                 = "${var.name}-access"
-  ssm_path                       = coalesce(var.ssm_path, "/db/${var.name}/${var.username}-password")
 
   db_tags = merge(
     var.tags,
