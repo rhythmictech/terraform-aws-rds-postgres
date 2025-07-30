@@ -23,7 +23,9 @@ resource "aws_db_instance" "this_ignore" {
   monitoring_role_arn                 = local.monitoring_role_arn
   multi_az                            = var.multi_az
   parameter_group_name                = local.parameter_group_name
-  password                            = local.password
+  password                            = local.use_managed_master_user_secret ? null : local.password
+  manage_master_user_password         = local.use_managed_master_user_secret
+  master_user_secret_kms_key_id       = local.use_managed_master_user_secret ? var.master_user_secret_kms_key_id : null
   performance_insights_enabled        = var.performance_insights_enabled #tfsec:ignore:aws-rds-enable-performance-insights
   port                                = var.port
   skip_final_snapshot                 = var.skip_final_snapshot
@@ -34,6 +36,6 @@ resource "aws_db_instance" "this_ignore" {
   vpc_security_group_ids              = [aws_security_group.this.id]
 
   lifecycle {
-    ignore_changes = [engine_version, password]
+    ignore_changes = [engine_version, password, master_user_secret]
   }
 }

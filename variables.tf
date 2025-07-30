@@ -41,15 +41,27 @@ variable "allowed_security_groups" {
 ########################################
 
 variable "create_secretmanager_secret" {
-  default     = true
-  description = "True to create a secretmanager secret containing DB password (not used if `password` is set)"
+  default     = false
+  description = "True to create a secretmanager secret containing DB password (not used if `password` is set or `manage_master_user_password` is true)"
   type        = bool
 }
 
 variable "create_ssm_secret" {
   default     = false
-  description = "True to create a SSM Parameter SecretString containing DB password (not used if `password` is set)"
+  description = "True to create a SSM Parameter SecretString containing DB password (not used if `password` is set or `manage_master_user_password` is true)"
   type        = bool
+}
+
+variable "manage_master_user_password" {
+  default     = true
+  description = "Set to true to allow RDS to manage the master user password in Secrets Manager (recommended). Takes precedence over create_secretmanager_secret and create_ssm_secret"
+  type        = bool
+}
+
+variable "master_user_secret_kms_key_id" {
+  default     = null
+  description = "The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key"
+  type        = string
 }
 
 variable "password" {

@@ -33,6 +33,15 @@ output "password_secretsmanager_version" {
   value       = try(module.password.version_id, null)
 }
 
+output "master_user_secret" {
+  description = "The master user secret when using RDS managed password"
+  value = local.use_managed_master_user_secret ? {
+    secret_arn    = try(local.db_instance.master_user_secret[0].secret_arn, null)
+    secret_status = try(local.db_instance.master_user_secret[0].secret_status, null)
+    kms_key_id    = try(local.db_instance.master_user_secret[0].kms_key_id, null)
+  } : null
+}
+
 output "password_ssm_parameter_arn" {
   description = "The ARN of the SecretManager Secret."
   value       = try(aws_ssm_parameter.password[0].arn, null)
